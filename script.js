@@ -4,7 +4,7 @@
 
 let config =
 {
-  atomicNumber: 118, // Atomic number
+  atomicNumber: 114, // Atomic number
   zamp: 0.4, // Z amplitude for animations
   smoothness: 2000, // Animation smoothness: higher is smoother
   animate: true, // Freeze animation by making this false
@@ -162,6 +162,28 @@ function getMaxElectronDistance()
   return Math.sqrt(2 * Math.pow(maxRadialDistance, 2) + Math.pow(maxZ, 2));
 }
 
+function reset()
+{
+  console.log(`New atomic number is ${config.atomicNumber}`);
+  removeElectrons();
+
+  // Reset rotation
+  rotatingGroup.rotation.y = 0;
+
+  // Clear existing electrons group
+  electronsGroup.children = [];
+
+  // Add electrons again
+  shells = getShells(config.atomicNumber);
+
+  // Iterate over shells
+  iterateShells();
+
+  // Adjust the camera position based on the maximum electron distance
+  if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5; // Adjust the multiplier as needed
+
+}
+
 ///////////////////////////////////////////////////////////////////
 // Rotate                                                      ////
 ///////////////////////////////////////////////////////////////////
@@ -180,6 +202,7 @@ function initRotation()
   // Add the group to the scene
   scene.add(rotatingGroup);
 }
+
 
 ///////////////////////////////////////////////////////////////////
 // Zoom                                                        ////
@@ -220,7 +243,7 @@ document.addEventListener('wheel', function(event)
 
 const gui = new dat.GUI();
 
-gui.add(config, 'atomicNumber', 1, 118, 1).onChange(reset());
+gui.add(config, 'atomicNumber', 1, 118, 1).onChange(function(value) { reset(); });
 gui.add(config, 'zamp', 0.1, 10).onChange(function(value) {});
 gui.add(config, 'smoothness', 1, 10000).onChange(function(value) {});
 gui.add(config, 'rotationSpeed', 0.001, 0.025, 0.001).onChange(function(value) {});
@@ -309,27 +332,6 @@ window.addEventListener('resize', function()
   camera.updateProjectionMatrix();
   renderer.setSize(width, height);
 });
-
-function reset()
-{
-  console.log(`New atomic number is ${config.atomicNumber}`);
-  removeElectrons();
-
-  // Reset rotation
-  rotatingGroup.rotation.y = 0;
-
-  // Clear existing electrons group
-  electronsGroup.children = [];
-
-  // Add electrons again
-  shells = getShells(config.atomicNumber);
-
-  // Iterate over shells
-  iterateShells();
-
-  // Adjust the camera position based on the maximum electron distance
-  if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5; // Adjust the multiplier as needed
-}
 
 // Animation loop
 function animate() 
