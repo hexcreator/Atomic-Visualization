@@ -5,7 +5,6 @@
 Play with it:
 🔗 [JsFiddle](https://jsfiddle.net/0xhex/wnh04xvo/102/)
 🔗 [Codepen](https://codepen.io/vead/pen/ZEmZoMb)
-🐦 [My Twitter](https://twitter.com/hexcreator)
 
 ## 1. What the Program Is
 
