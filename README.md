@@ -5,6 +5,8 @@ Play with it:
 🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/ <br>
 🔗 https://codepen.io/vead/pen/ZEmZoMb
 
+Change the configs around to explore. If you want to download clips, you'll have to clone this repo and run it locally.
+
 ## 1. What the Program Is
 
 <div> <img src="https://i.imgur.com/O9XDgYH.gif" height="300"> <img src="https://i.imgur.com/ftQRCBG.gif" height="300"> <img src="https://i.imgur.com/bubZA0L.gif" height="300"> </div>
