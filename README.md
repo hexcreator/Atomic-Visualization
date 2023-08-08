@@ -5,7 +5,7 @@ Play with it:
 🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/ <br>
 🔗 https://codepen.io/vead/pen/ZEmZoMb
 
-Change the configs around to explore. If you want to download clips, you'll have to clone this repo and run it locally.
+Change the configs around to explore. If you want to download clips, you'll have to clone this repo and run it locally. Left click to rotate/pivot, and right click to pan/drag. Use your wheel to zoom in.
 
 ## 1. What the Program Is
 
@@ -13,7 +13,7 @@ Change the configs around to explore. If you want to download clips, you'll have
 
 This program is an interactive visualization of atomic structures, created using Three.js. It showcases a 3D model of an atom with configurable parameters such as atomic number, animation smoothness, and more. Users can change the atomic number to visualize different elements, zoom in and out, and enable or disable animations.
 
-The nucleus is depicted as a sphere at the center, and the electrons are represented as spheres orbiting in different shells. The program also includes a user interface that allows users to modify various properties of the visualization.
+The nucleus is depicted as a sphere at the center, and the electrons are represented as spheres orbiting in different shells. The program also includes a user interface that allows you to modify various properties of the visualization. You can 
 
 ## 2. Disclaimers about Accuracy
 
