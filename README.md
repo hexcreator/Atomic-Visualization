@@ -3,8 +3,8 @@
 # Atomic Visualization in Three.js
 
 Play with it:
-🔗 [JsFiddle](https://jsfiddle.net/0xhex/wnh04xvo/102/)
-🔗 [Codepen](https://codepen.io/vead/pen/ZEmZoMb)
+🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/
+🔗 https://codepen.io/vead/pen/ZEmZoMb
 
 ## 1. What the Program Is
 
