@@ -7,7 +7,7 @@ Play with it:
 
 ## 1. What the Program Is
 
-<div> <img src="https://i.imgur.com/ftQRCBG.gif" height="300"> <img src="https://i.imgur.com/bubZA0L.gif" height="300"> </div>
+<div> <img src="https://i.imgur.com/O9XDgYH.gif" height="300"> <img src="https://i.imgur.com/ftQRCBG.gif" height="300"> <img src="https://i.imgur.com/bubZA0L.gif" height="300"> </div>
 
 This program is an interactive visualization of atomic structures, created using Three.js. It showcases a 3D model of an atom with configurable parameters such as atomic number, animation smoothness, and more. Users can change the atomic number to visualize different elements, zoom in and out, and enable or disable animations.
 
