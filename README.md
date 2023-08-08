@@ -4,15 +4,13 @@
 
 ## 1. What the Program Is
 
-<img src="https://i.imgur.com/ftQRCBG.gif" height="300">
+<div> <img src="https://i.imgur.com/ftQRCBG.gif" height="300"> <img src="https://i.imgur.com/bubZA0L.gif" height="300"> </div>
 
 This program is an interactive visualization of atomic structures, created using Three.js. It showcases a 3D model of an atom with configurable parameters such as atomic number, animation smoothness, and more. Users can change the atomic number to visualize different elements, zoom in and out, and enable or disable animations.
 
 The nucleus is depicted as a sphere at the center, and the electrons are represented as spheres orbiting in different shells. The program also includes a user interface that allows users to modify various properties of the visualization.
 
 ## 2. Disclaimers about Accuracy
-
-<img src="https://i.imgur.com/O9XDgYH.gif" height="300"> 
 
 While the program aims to provide a visually appealing representation of atomic structures, it's important to note that the visualization is a simplified and abstract model. It does not accurately represent the complex quantum-mechanical nature of atoms.
 
@@ -39,6 +37,18 @@ To run the program, you'll need a modern web browser that supports WebGL.
 4. **Mouse Controls:** Use the mouse to pan and zoom the view.
 
 Feel free to explore different elements and settings to see how the visualization changes.
+
+## 5. Showcase
+
+### Polonium
+<img src="https://i.imgur.com/O9XDgYH.gif" height="300"> 
+
+### Carbon
+<img src="https://i.imgur.com/pvnuGqI.gif" height="300"> 
+
+### Helium
+<img src="https://i.imgur.com/OGPJyOk.gif" height="300"> 
+
 
 ---
 
