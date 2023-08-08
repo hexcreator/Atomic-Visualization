@@ -1,9 +1,8 @@
----
-
 # Atomic Visualization in Three.js
 
 Play with it:
-🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/
+
+🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/ <br>
 🔗 https://codepen.io/vead/pen/ZEmZoMb
 
 ## 1. What the Program Is
