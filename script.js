@@ -4,13 +4,15 @@
 
 let config =
 {
-  atomicNumber: 1, // Atomic number
+  atomicNumber: 118, // Atomic number
   zamp: 0.4, // Z amplitude for animations
   smoothness: 2000, // Animation smoothness: higher is smoother
-  animate: true,
-  rotationSpeed: 0.008,
-  autozoom: true,
-  shouldRotate: true
+  animate: true, // Freeze animation by making this false
+  rotationSpeed: 0.008, // Speed for rotation across the y axis
+  autozoom: true, // Whether to autozoom into the atom and electrons when you change the atomic number
+  shouldRecord: false,
+  shouldRotate: true,
+  recordingDuration: 15_000
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -38,10 +40,7 @@ camera.position.z = 5;
 
 // Create nucleus (a sphere)
 const nucleusGeometry = new THREE.SphereGeometry(0.25, 32, 32); // Radius 0.25, 32 width and height segments
-const nucleusMaterial = new THREE.MeshBasicMaterial(
-{
-  color: 0xffff00
-}); // Yellow color
+const nucleusMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // Yellow color
 const nucleus = new THREE.Mesh(nucleusGeometry, nucleusMaterial);
 
 // Add nucleus to the scene
@@ -73,10 +72,7 @@ function iterateShells()
     for (let i = 0; i < numberOfElectrons; i++)
     {
       const electronGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-      const electronMaterial = new THREE.MeshBasicMaterial(
-      {
-        color: color
-      });
+      const electronMaterial = new THREE.MeshBasicMaterial({ color: color });
       const electron = new THREE.Mesh(electronGeometry, electronMaterial);
       const angle = (i / numberOfElectrons) * 2 * Math.PI;
       electron.position.set(radius * Math.cos(angle), radius * Math.sin(angle), 0);
@@ -166,7 +162,6 @@ function getMaxElectronDistance()
   return Math.sqrt(2 * Math.pow(maxRadialDistance, 2) + Math.pow(maxZ, 2));
 }
 
-
 ///////////////////////////////////////////////////////////////////
 // Rotate                                                      ////
 ///////////////////////////////////////////////////////////////////
@@ -184,28 +179,6 @@ function initRotation()
 
   // Add the group to the scene
   scene.add(rotatingGroup);
-}
-
-function reset()
-{
-  console.log(`New atomic number is ${config.atomicNumber}`);
-  removeElectrons();
-
-  // Reset rotation
-  rotatingGroup.rotation.y = 0;
-
-  // Clear existing electrons group
-  electronsGroup.children = [];
-
-  // Add electrons again
-  shells = getShells(config.atomicNumber);
-
-  // Iterate over shells
-  iterateShells();
-
-  // Adjust the camera position based on the maximum electron distance
-  if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5; // Adjust the multiplier as needed
-
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -256,6 +229,75 @@ gui.add(config, "autozoom");
 gui.add(config, "shouldRotate");
 
 ///////////////////////////////////////////////////////////////////
+// Recording                                                   ////
+///////////////////////////////////////////////////////////////////
+
+// Variables to control the recording process
+let recording = false;
+let currentAtomicNumber = 1;
+const maxAtomicNumber = 118; // 118;
+const elementNames = ["", "Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen", "Fluorine", "Neon", "Sodium", "Magnesium", "Aluminium", "Silicon", "Phosphorus", "Sulfur", "Chlorine", "Argon", "Potassium", "Calcium", "Scandium", "Titanium", "Vanadium", "Chromium", "Manganese", "Iron", "Cobalt", "Nickel", "Copper", "Zinc", "Gallium", "Germanium", "Arsenic", "Selenium", "Bromine", "Krypton", "Rubidium", "Strontium", "Yttrium", "Zirconium", "Niobium", "Molybdenum", "Technetium", "Ruthenium", "Rhodium", "Palladium", "Silver", "Cadmium", "Indium", "Tin", "Antimony", "Tellurium", "Iodine", "Xenon", "Cesium", "Barium", "Lanthanum", "Cerium", "Praseodymium", "Neodymium", "Promethium", "Samarium", "Europium", "Gadolinium", "Terbium", "Dysprosium", "Holmium", "Erbium", "Thulium", "Ytterbium", "Lutetium", "Hafnium", "Tantalum", "Tungsten", "Rhenium", "Osmium", "Iridium", "Platinum", "Gold", "Mercury", "Thallium", "Lead", "Bismuth", "Polonium", "Astatine", "Radon", "Francium", "Radium", "Actinium", "Thorium", "Protactinium", "Uranium", "Neptunium", "Plutonium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Fermium", "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium", "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium", "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Oganesson", "Ununennium"];
+
+// CCapture instance
+let capturer = new CCapture({
+  format: 'webm',
+  framerate: 60,
+});
+
+function startRecording() 
+{
+  recording = true;
+
+  // Instantiate a new CCapture object
+  capturer = new CCapture({
+    format: 'webm',
+    framerate: 60,
+  });
+  
+  // Start the capturer
+  capturer.start();
+
+  // Set a timer to stop recording after the desired duration
+  setTimeout(stopRecording, config.recordingDuration);
+}
+
+function stopRecording() 
+{
+  recording = false;
+
+  // Stop the capturer
+  capturer.stop();
+
+  // Save the video
+  const oldAtomicNumber = currentAtomicNumber;
+  capturer.save((blob) => 
+  {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${elementNames[oldAtomicNumber]}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Increment the atomic number and check if there are more to record
+  currentAtomicNumber++;
+  console.log(`Stopped recording, now at atomic number ${currentAtomicNumber}`);
+
+  // Set the desired atomic number
+  config.atomicNumber = currentAtomicNumber;
+
+  // Reset, since we changed the atomic number
+  reset();
+
+  if (currentAtomicNumber <= maxAtomicNumber) 
+  {
+    // Optionally add a delay between recordings
+    setTimeout(startRecording, 1000);
+  }
+}
+
+///////////////////////////////////////////////////////////////////
 // Animation                                                   ////
 ///////////////////////////////////////////////////////////////////
 
@@ -268,13 +310,38 @@ window.addEventListener('resize', function()
   renderer.setSize(width, height);
 });
 
+function reset()
+{
+  console.log(`New atomic number is ${config.atomicNumber}`);
+  removeElectrons();
+
+  // Reset rotation
+  rotatingGroup.rotation.y = 0;
+
+  // Clear existing electrons group
+  electronsGroup.children = [];
+
+  // Add electrons again
+  shells = getShells(config.atomicNumber);
+
+  // Iterate over shells
+  iterateShells();
+
+  // Adjust the camera position based on the maximum electron distance
+  if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5; // Adjust the multiplier as needed
+}
 
 // Animation loop
 function animate() 
 {
   requestAnimationFrame(animate);
   if (config.animate) animateElectrons();
+
+  // Gradually rotate the group horizontally
   if (config.animate && config.shouldRotate) rotatingGroup.rotation.y += config.rotationSpeed;
+
+  if (recording) capturer.capture(renderer.domElement);
+
   controls.update();
   renderer.render(scene, camera);
 }
@@ -285,6 +352,7 @@ function animate()
 
 if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5;
 if (config.shouldRotate) initRotation();
+if (config.shouldRecord) startRecording(); // Start the recording process for the first atomic number
 animate();
 
 ///////////////////////////////////////////////////////////////////
