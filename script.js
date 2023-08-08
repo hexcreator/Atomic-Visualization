@@ -4,11 +4,13 @@
 
 let config =
 {
-  atomicNumber: 37, // Atomic number
-  zamp: 0.3, // Z amplitude for animations
+  atomicNumber: 1, // Atomic number
+  zamp: 0.4, // Z amplitude for animations
   smoothness: 2000, // Animation smoothness: higher is smoother
   animate: true,
-  rotationSpeed: 0.002
+  rotationSpeed: 0.008,
+  autozoom: true,
+  shouldRotate: true
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ let config =
 // Create scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -35,7 +37,7 @@ camera.position.z = 5;
 ///////////////////////////////////////////////////////////////////
 
 // Create nucleus (a sphere)
-const nucleusGeometry = new THREE.SphereGeometry(0.25, 32, 32); // Radius 0.5, 32 width and height segments
+const nucleusGeometry = new THREE.SphereGeometry(0.25, 32, 32); // Radius 0.25, 32 width and height segments
 const nucleusMaterial = new THREE.MeshBasicMaterial(
 {
   color: 0xffff00
@@ -151,6 +153,20 @@ function removeElectrons()
   for (const child of electronsGroup.children.slice()) electronsGroup.remove(child);
 }
 
+function getMaxElectronDistance() 
+{
+  // Calculate the number of shells for the current atomic number
+  let numberOfShells = getShells(config.atomicNumber).length;
+
+  // Compute the maximum radial distance and maximum z-coordinate
+  let maxRadialDistance = numberOfShells / 2;
+  let maxZ = config.zamp * (numberOfShells + 2);
+
+  // Return the maximum 3D distance
+  return Math.sqrt(2 * Math.pow(maxRadialDistance, 2) + Math.pow(maxZ, 2));
+}
+
+
 ///////////////////////////////////////////////////////////////////
 // Rotate                                                      ////
 ///////////////////////////////////////////////////////////////////
@@ -170,11 +186,33 @@ function initRotation()
   scene.add(rotatingGroup);
 }
 
+function reset()
+{
+  console.log(`New atomic number is ${config.atomicNumber}`);
+  removeElectrons();
+
+  // Reset rotation
+  rotatingGroup.rotation.y = 0;
+
+  // Clear existing electrons group
+  electronsGroup.children = [];
+
+  // Add electrons again
+  shells = getShells(config.atomicNumber);
+
+  // Iterate over shells
+  iterateShells();
+
+  // Adjust the camera position based on the maximum electron distance
+  if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5; // Adjust the multiplier as needed
+
+}
+
 ///////////////////////////////////////////////////////////////////
 // Zoom                                                        ////
 ///////////////////////////////////////////////////////////////////
 
-let zoomFactor = 0.1;
+let zoomFactor = 0.01;
 const ZOOM_STEP = 0.00001; // The fixed zoom step
 
 // Define a zoom function that takes an amount to zoom in or out
@@ -209,29 +247,13 @@ document.addEventListener('wheel', function(event)
 
 const gui = new dat.GUI();
 
-gui.add(config, 'atomicNumber', 1, 118, 1).onChange(function(value) 
-{
-
-  console.log(`New atomic number is ${config.atomicNumber}`);
-  removeElectrons();
-
-  // Reset rotation
-  rotatingGroup.rotation.y = 0;
-
-  // Clear existing electrons group
-  electronsGroup.children = [];
-
-  // Add electrons again
-  shells = getShells(config.atomicNumber);
-
-  // Iterate over shells
-  iterateShells();
-
-});
+gui.add(config, 'atomicNumber', 1, 118, 1).onChange(reset());
 gui.add(config, 'zamp', 0.1, 10).onChange(function(value) {});
 gui.add(config, 'smoothness', 1, 10000).onChange(function(value) {});
 gui.add(config, 'rotationSpeed', 0.001, 0.025, 0.001).onChange(function(value) {});
 gui.add(config, "animate");
+gui.add(config, "autozoom");
+gui.add(config, "shouldRotate");
 
 ///////////////////////////////////////////////////////////////////
 // Animation                                                   ////
@@ -252,13 +274,18 @@ function animate()
 {
   requestAnimationFrame(animate);
   if (config.animate) animateElectrons();
-
-  // Gradually rotate the group horizontally
-  if (config.animate) rotatingGroup.rotation.y += config.rotationSpeed;
-
+  if (config.animate && config.shouldRotate) rotatingGroup.rotation.y += config.rotationSpeed;
   controls.update();
   renderer.render(scene, camera);
 }
 
-initRotation();
+///////////////////////////////////////////////////////////////////
+// Launch                                                      ////
+///////////////////////////////////////////////////////////////////
+
+if (config.autozoom) camera.position.z = getMaxElectronDistance() * 1.5;
+if (config.shouldRotate) initRotation();
 animate();
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
