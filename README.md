@@ -5,7 +5,7 @@ Play with it:
 🔗 https://jsfiddle.net/0xhex/wnh04xvo/102/ <br>
 🔗 https://codepen.io/vead/pen/ZEmZoMb
 
-Change the configs around to explore. If you want to download clips, you'll have to clone this repo and run it locally. Left click to rotate/pivot, and right click to pan/drag. Use your wheel to zoom in.
+Left click to rotate/pivot, and right click to pan/drag. Use your wheel to zoom in. Change the configs around to explore. If you want to download clips, you'll have to clone this repo and run it locally.
 
 ## 1. What the Program Is
 
